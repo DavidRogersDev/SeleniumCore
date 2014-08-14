@@ -18,14 +18,17 @@ namespace KesselRun.SeleniumCore.Infrastructure.Factories
             _driverOptions = driverOptions;
         }
 
-        public TestDriverFactory(string testDriverType, DriverOptions driverOptions)
+        public TestDriverFactory(DriverOptions driverOptions, string testDriverType)
         {
             _testDriverType = testDriverType;
             _driverOptions = driverOptions;
         }
 
-        public ITestDriver CreateTestDriver()
+        public virtual ITestDriver CreateTestDriver()
         {
+            if(string.IsNullOrWhiteSpace(_testDriverType))
+                throw new Exception();
+
             switch (_testDriverType)
             {
                 case Constants.ChromeTestDriver:
@@ -39,7 +42,7 @@ namespace KesselRun.SeleniumCore.Infrastructure.Factories
             }
         }
 
-        public ITestDriver CreateTestDriver<T>()
+        public virtual ITestDriver CreateTestDriver<T>()
         {
             if (typeof (T) == typeof (ChromeTestDriver))
             {
@@ -59,7 +62,7 @@ namespace KesselRun.SeleniumCore.Infrastructure.Factories
             throw new NotSupportedException(string.Format("{0} is not a supported driver", typeof(T)));
         }
 
-        public ITestDriver CreateTestDriver(DriverType driverType)
+        public virtual ITestDriver CreateTestDriver(DriverType driverType)
         {
             switch (driverType)
             {
