@@ -1,4 +1,5 @@
-﻿using KesselRun.SeleniumCore.Infrastructure;
+﻿using System.Threading;
+using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using System;
@@ -26,6 +27,7 @@ namespace ConsoleDriver
 
             firefoxWebDriver.TypeText(searchBox, "parking");
             firefoxWebDriver.FindByXPathClick("//*[@id='Table_01a']/tbody/tr/td[3]/a/img");
+            
 
             firefoxWebDriver.Quit();
 

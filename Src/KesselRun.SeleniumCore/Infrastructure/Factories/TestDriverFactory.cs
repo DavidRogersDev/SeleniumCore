@@ -27,7 +27,7 @@ namespace KesselRun.SeleniumCore.Infrastructure.Factories
         public virtual ITestDriver CreateTestDriver()
         {
             if(string.IsNullOrWhiteSpace(_testDriverType))
-                throw new Exception();
+                throw new NullReferenceException("This overload of the CreateTestDriver method can only used if the Constructor which takes a 'testDriverType' parameter is used to create this factory. Either pass in a string matching the desired 'testDriverType' to that constructor or use one of the other overloads of this CreateTestDriver method.");
 
             switch (_testDriverType)
             {
