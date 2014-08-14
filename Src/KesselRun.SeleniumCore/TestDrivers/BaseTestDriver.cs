@@ -12,6 +12,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
     public abstract class BaseTestDriver : ITestDriver
     {
         public const int DefaultWebDriverWait = 15;
+        public const string HttpPrefix = @"http://";
 
         public string DefaultUrl { get; set; }
         public IWebDriver WebDriver { get; protected set; }
@@ -38,6 +39,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
             if (string.IsNullOrEmpty(url))
             {
                 url = DefaultUrl;
+            }
+
+            if (!url.StartsWith(HttpPrefix))
+            {
+                url = string.Concat(HttpPrefix, url);
             }
 
             navigation.GoToUrl(url);

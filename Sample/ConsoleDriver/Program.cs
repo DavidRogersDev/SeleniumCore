@@ -22,6 +22,11 @@ namespace ConsoleDriver
 
             firefoxWebDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
 
+            var searchBox = firefoxWebDriver.FindByCssSelector("#Table_01a > tbody > tr > td:nth-child(2) > input");
+
+            firefoxWebDriver.TypeText(searchBox, "parking");
+            firefoxWebDriver.FindByXPathClick("//*[@id='Table_01a']/tbody/tr/td[3]/a/img");
+
             firefoxWebDriver.Quit();
 
             Console.WriteLine("...");
