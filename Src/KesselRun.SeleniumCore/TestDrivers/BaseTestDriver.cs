@@ -4,22 +4,14 @@ using KesselRun.SeleniumCore.Exceptions;
 using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.TestDrivers.Contracts;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium.Interactions;
 
 namespace KesselRun.SeleniumCore.TestDrivers
 {
     public abstract class BaseTestDriver : ITestDriver
     {
         public const int DefaultWebDriverWait = 15;
-
-        #region Constructor
-
-        protected BaseTestDriver()
-        {
-
-        } 
-        #endregion
 
         public string DefaultUrl { get; set; }
         public IWebDriver WebDriver { get; protected set; }
@@ -265,6 +257,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
         {
             var element = GetWebElementByFinderStrategy(findBy, domElement);
             HoverOverElement(element);
+        }
+
+        public void Quit()
+        {
+            WebDriver.Quit();
         }
 
         public virtual IWebElement TypeText(IWebElement webElement, string text)

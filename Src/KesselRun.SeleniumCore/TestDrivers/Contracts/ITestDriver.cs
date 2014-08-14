@@ -42,6 +42,7 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         void GoToUrl(string url);
         void Initialize(DriverOptions driverOptions);
         void MouseOverElement(FinderStrategy findBy, string domElement, string script = null);
+        void Quit();
         IWebElement TypeText(IWebElement webElement, string text);
         IWebElement TypeText(FinderStrategy findBy, string domElement, string text);
         IWebElement TypeText(FinderStrategy findBy, string domElement, string text, InputGesture inputGesture);
