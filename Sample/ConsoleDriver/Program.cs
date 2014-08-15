@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
@@ -23,15 +23,17 @@ namespace ConsoleDriver
 
             firefoxWebDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
 
-            var searchBox = firefoxWebDriver.FindByCssSelector("#Table_01a > tbody > tr > td:nth-child(2) > input");
+            firefoxWebDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
+            firefoxWebDriver.FindByIdClick("menuLink2_1");
 
-            firefoxWebDriver.TypeText(searchBox, "parking");
-            firefoxWebDriver.FindByXPathClick("//*[@id='Table_01a']/tbody/tr/td[3]/a/img");
-            
+            var heading = firefoxWebDriver.FindByCssSelectorFromWebElement(firefoxWebDriver.FindByClassName("maintd"), "h1");
+
+            Console.WriteLine(heading.Text);
+           
 
             firefoxWebDriver.Quit();
 
-            Console.WriteLine("...");
+            Console.WriteLine("Press any key to close ...");
             Console.ReadKey();
         }
     }

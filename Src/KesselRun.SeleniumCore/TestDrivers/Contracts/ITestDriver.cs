@@ -39,6 +39,7 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         IWebElement FindByXPathClick(string domElement, int? seconds = null);
         IWebElement FindByXPathFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByXPathFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
+        string GetDocumentTitle();
         void GoToUrl(string url);
         void Initialize(DriverOptions driverOptions);
         void MouseOverElement(FinderStrategy findBy, string domElement, string script = null);

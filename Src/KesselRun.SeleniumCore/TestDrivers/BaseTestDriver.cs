@@ -13,6 +13,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
     {
         public const int DefaultWebDriverWait = 15;
         public const string HttpPrefix = @"http://";
+        public const string HttpSslPrefix = @"https://";
 
         public string DefaultUrl { get; set; }
         public IWebDriver WebDriver { get; protected set; }
@@ -32,6 +33,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
             throw new ElementWasNullException(finderStrategy, domElement, seconds);
         }
 
+        public virtual string GetDocumentTitle()
+        {
+            return WebDriver.Title;
+        }
+
         public virtual void GoToUrl(string url)
         {
             INavigation navigation = WebDriver.Navigate();
@@ -41,8 +47,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
                 url = DefaultUrl;
             }
 
-            if (!url.StartsWith(HttpPrefix))
+            if (!url.StartsWith(HttpPrefix) && !url.StartsWith(HttpSslPrefix))
             {
+                //  Assume not SSL if dev to lazy to type in "https://"
                 url = string.Concat(HttpPrefix, url);
             }
 
