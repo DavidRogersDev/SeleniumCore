@@ -26,14 +26,14 @@ namespace ConsoleDriver
             firefoxWebDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
             firefoxWebDriver.FindByIdClick("menuLink2_1");
 
-            var heading = firefoxWebDriver.FindByCssSelectorFromWebElement(firefoxWebDriver.FindByClassName("maintd"), "h1");
+            var heading = firefoxWebDriver.FindByCssSelectorFromWebElement(firefoxWebDriver.FindByClassName("maintd", ExpectedCondition.ElementIsVisible, 5), "h1");
 
             Console.WriteLine(heading.Text);
            
 
             firefoxWebDriver.Quit();
 
-            Console.WriteLine("Press any key to close ...");
+            Console.WriteLine("{0}Press any key to close ...", Environment.NewLine);
             Console.ReadKey();
         }
     }

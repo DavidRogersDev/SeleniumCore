@@ -52,6 +52,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="Enums\By.cs" />
     <Compile Include="Enums\DriverType.cs" />
+    <Compile Include="Enums\ExpectedCondition.cs" />
     <Compile Include="Enums\InputGesture.cs" />
     <Compile Include="Exceptions\EmptyScriptException.cs" />
     <Compile Include="TestDrivers\Browsers\Chrome\ChromeTestDriver.cs" />
