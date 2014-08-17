@@ -68,9 +68,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
             ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, 
             int? seconds = null)
         {
-            Func<IWebDriver, IWebElement> getWebelementFunc = GetWebelementFunc(By.ClassName(className), expectedCondition);
+            Func<IWebDriver, IWebElement> webelementFunc = GetWebelementFunc(By.ClassName(className), expectedCondition);
 
-            return FindWebElement(By.ClassName(className), seconds, getWebelementFunc);
+            return FindWebElement(By.ClassName(className), seconds, webelementFunc);
         }
 
         public virtual IWebElement FindByClassNameClick(
@@ -85,7 +85,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByClassNameFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.ClassName(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.ClassName(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.ClassName(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByClassNameFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -93,7 +95,6 @@ namespace KesselRun.SeleniumCore.TestDrivers
             IWebElement element = FindByClassNameFromWebElement(webElement, domElement, seconds);
 
             return ClickWebElement(domElement, seconds, element, FinderStrategy.ClassName);
-
         }
 
         public virtual IWebElement FindByCssSelector(
@@ -117,7 +118,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
         }
         public virtual IWebElement FindByCssSelectorFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.CssSelector(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.CssSelector(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.CssSelector(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByCssSelectorFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -149,7 +152,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByIdFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.Id(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.Id(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.Id(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByIdFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -181,7 +186,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByLinkFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.LinkText(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.LinkText(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.LinkText(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByLinkFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -213,7 +220,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByNameFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.Name(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.Name(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.Name(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByNameFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -246,7 +255,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByPartialLinkTextFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.PartialLinkText(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.PartialLinkText(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.PartialLinkText(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByPartialLinkTextFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -264,7 +275,6 @@ namespace KesselRun.SeleniumCore.TestDrivers
             Func<IWebDriver, IWebElement> getWebelementFunc = GetWebelementFunc(By.TagName(domElement), expectedCondition);
 
             return FindWebElement(By.TagName(domElement), seconds, getWebelementFunc);
-
         }
 
         public virtual IWebElement FindByTagNameClick(
@@ -279,7 +289,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByTagNameFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.TagName(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.TagName(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.TagName(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByTagNameFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -312,7 +324,9 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         public virtual IWebElement FindByXPathFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
-            return FindWebElementFromWebElement(webElement, By.XPath(domElement), seconds);
+            Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.XPath(domElement), webElement);
+
+            return FindWebElementFromWebElement(By.XPath(domElement), seconds, webElement, webelementFromWebElementFunc);
         }
 
         public virtual IWebElement FindByXPathFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null)
@@ -324,11 +338,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
         private IWebElement FindWebElement(By findBy, int? seconds, Func<IWebDriver, IWebElement> expectedFunc)
         {
-            return seconds.HasValue ? FindWithWait(findBy, seconds.Value, expectedFunc) : WebDriver.FindElement(findBy);
+            return seconds.HasValue ? FindWithWait(seconds.Value, expectedFunc) : WebDriver.FindElement(findBy);
         }
-        private IWebElement FindWebElementFromWebElement(IWebElement webElement, By findBy, int? seconds = null)
+        private IWebElement FindWebElementFromWebElement(By findBy, int? seconds, IWebElement webElement, Func<IWebDriver, IWebElement> expectedFunc)
         {
-            return seconds.HasValue ? FindWithWaitFromElement(webElement, findBy, seconds.Value) : webElement.FindElement(findBy);
+            return seconds.HasValue ? FindWithWait(seconds.Value, expectedFunc) : webElement.FindElement(findBy);
         }
         
         public abstract void Initialize(DriverOptions driverOptions);
@@ -392,16 +406,10 @@ namespace KesselRun.SeleniumCore.TestDrivers
             WebDriver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(wait ?? DefaultWebDriverWait));
         }
 
-        private IWebElement FindWithWait(By findBy, int seconds, Func<IWebDriver, IWebElement> expectedFunc)
+        private IWebElement FindWithWait(int seconds, Func<IWebDriver, IWebElement> expectedFunc)
         {
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(seconds));
             return wait.Until(expectedFunc);
-        }        
-        
-        private IWebElement FindWithWaitFromElement(IWebElement webElement, By findBy, int seconds)
-        {
-            var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(seconds));
-            return wait.Until(webdriver => webElement.FindElement(findBy));
         }
 
         private static Func<IWebDriver, IWebElement> GetWebelementFunc(By locator, ExpectedCondition expectedCondition)
@@ -428,6 +436,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
                             ));
             }
             return getWebelementFunc;
+        }
+
+        private static Func<IWebDriver, IWebElement> GetWebelementFromWebElementFunc(By locator, IWebElement webElement)
+        {
+            return webdriver => webElement.FindElement(locator);
         }
 
         private IWebElement GetWebElementByFinderStrategy(FinderStrategy findBy, string domElement)
