@@ -1,6 +1,6 @@
 Dave's Selenium Wrapper
 =======================
-
+[![Build status](https://ci.appveyor.com/api/projects/status/9dwm5u142s6s47vf)](https://ci.appveyor.com/project/DavidRogersDev/seleniumcore)
 
 This library is a wrapper around the C# Selenium bindings, to provide a sipmle API for driving the Selenium Webdriver. I feel it's a bit grandiose to call it a framework, so lets just stick with wrapper.
 
