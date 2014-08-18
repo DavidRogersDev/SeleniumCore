@@ -9,7 +9,26 @@ It has a couple of dependancies which can easily be added via nuget:
 - Selenium.WebDriver (obviously)
 - Selenium.Support
 
-From the sample projects:
-
-**[example code here]**  
-
+From the sample project:
+    
+    ITestDriverFactory testDriverFactory = new TestDriverFactory(
+    	new DriverOptions
+    	{
+    		DriverExePath = ConfigurationManager.AppSettings["FirefoxExePath"],
+    		Port = int.Parse(ConfigurationManager.AppSettings["FirefoxBrowserPort"]),
+    		Url = ConfigurationManager.AppSettings["StartUrl"]
+    	}, "Firefox");
+    
+    var firefoxWebDriver = testDriverFactory.CreateTestDriver();
+    
+    firefoxWebDriver.GoToUrl(null); // will use default Url passed in to factory as part of DriverOptions struct
+    
+    firefoxWebDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
+    firefoxWebDriver.FindByIdClick("menuLink2_1");
+    
+    var heading = firefoxWebDriver.FindByCssSelectorFromWebElement(firefoxWebDriver.FindByClassName("maintd", ExpectedCondition.ElementIsVisible, 5), "h1");
+    
+    Console.WriteLine(heading.Text);
+    
+    
+    firefoxWebDriver.Quit();
