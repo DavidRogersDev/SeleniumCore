@@ -10,7 +10,7 @@ using UnitTestSample.Pages;
 namespace UnitTestSample
 {
     [TestClass]
-    public class UnitTest1
+    public class BasicSearchTests
     {
         [TestMethod]
         public void BasicSearchOfWaiterRantBlog()
