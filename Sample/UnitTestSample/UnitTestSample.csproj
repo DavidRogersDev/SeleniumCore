@@ -61,7 +61,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="BasePage.cs" />
-    <Compile Include="WaiterrantHomePage.cs" />
+    <Compile Include="Pages\PetStockHomePage.cs" />
+    <Compile Include="Pages\WaiterrantHomePage.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

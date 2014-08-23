@@ -1,6 +1,6 @@
 ﻿using KesselRun.SeleniumCore.TestDrivers.Contracts;
 
-namespace UnitTestSample
+namespace UnitTestSample.Pages
 {
     public class WaiterrantHomePage : BasePage
     {
