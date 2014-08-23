@@ -63,7 +63,7 @@
     <Compile Include="BasePage.cs" />
     <Compile Include="Pages\PetStockHomePage.cs" />
     <Compile Include="Pages\WaiterrantHomePage.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="BasicSearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
