@@ -1,4 +1,5 @@
-﻿using KesselRun.SeleniumCore.Enums;
+﻿using System;
+using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Exceptions;
 using KesselRun.SeleniumCore.Infrastructure;
 using OpenQA.Selenium;
@@ -8,19 +9,40 @@ namespace KesselRun.SeleniumCore.TestDrivers.Browsers.Ie
 {
     public class IeTestDriver : BaseTestDriver
     {
+        private Converter<DriverEngine, InternetExplorerDriverEngine> _engineConverter;
+
+        private InternetExplorerDriverEngine ConvertToBrowserEngine(DriverEngine driverEngine)
+        {
+            switch (driverEngine)
+            {
+                case DriverEngine.AutoDetect:
+                    return InternetExplorerDriverEngine.AutoDetect;
+                case DriverEngine.Legacy:
+                    return InternetExplorerDriverEngine.Legacy;
+                case DriverEngine.Vendor:
+                    return InternetExplorerDriverEngine.Vendor;
+
+            }
+            return InternetExplorerDriverEngine.Legacy;
+        }
+
         public override void Initialize(DriverOptions driverOptions)
         {
+            //  Do not set implicit waits. Prefer usage of explicit waits.
+            //  Can always turn on implicit waits at a later time, but once set, they cannot be changed.
+
             DefaultUrl = driverOptions.Url;
 
             var internetExplorerDriverService =
                 InternetExplorerDriverService.CreateDefaultService(driverOptions.DriverExePath);
             var internetExplorerOptions = new InternetExplorerOptions();
 
+            _engineConverter = ConvertToBrowserEngine;
+            internetExplorerDriverService.Implementation = _engineConverter(driverOptions.DriverEngine); 
+
             internetExplorerDriverService.Port = driverOptions.Port; // this is the port for the driver, not the webpage
 
             WebDriver = new InternetExplorerDriver(internetExplorerDriverService, internetExplorerOptions);
-            TurnOnImplicitWait(null);
-            TurnOnScriptWait(null);
         }
 
         protected override IWebElement ClickWebElement(string domElement, int? seconds, IWebElement element, FinderStrategy finderStrategy)
@@ -32,14 +54,6 @@ namespace KesselRun.SeleniumCore.TestDrivers.Browsers.Ie
             }
 
             throw new ElementWasNullException(finderStrategy, domElement, seconds);
-        }
-
-        public override void MouseOverElement(FinderStrategy findBy, string domElement, string script = null)
-        {
-            if (string.IsNullOrWhiteSpace(script))
-                throw new EmptyScriptException("The 'script' parameter cannot be null for the IeTestDriver.");
-
-            ((IJavaScriptExecutor)WebDriver).ExecuteScript(script);
         }
     }
 }

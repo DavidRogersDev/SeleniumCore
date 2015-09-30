@@ -4,6 +4,7 @@ using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using System;
 using System.Configuration;
+using KesselRun.SeleniumCore.TestDrivers.Browsers.Chrome;
 
 namespace ConsoleDriver
 {
@@ -14,24 +15,24 @@ namespace ConsoleDriver
             ITestDriverFactory testDriverFactory = new TestDriverFactory(
                 new DriverOptions
                 {
-                    DriverExePath = ConfigurationManager.AppSettings["FirefoxExePath"],
-                    Port = int.Parse(ConfigurationManager.AppSettings["FirefoxBrowserPort"]),
+                    DriverExePath = ConfigurationManager.AppSettings["ChromeDriverPath"],
+                    Port = int.Parse(ConfigurationManager.AppSettings["ChromeBrowserPort"]),
                     Url = ConfigurationManager.AppSettings["StartUrl"]
-                }, "Firefox");
+                });
 
-            var firefoxWebDriver = testDriverFactory.CreateTestDriver();
+            var testDriver = testDriverFactory.CreateTestDriver<ChromeTestDriver>();
 
-            firefoxWebDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
+            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
 
-            firefoxWebDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
-            firefoxWebDriver.FindByIdClick("menuLink2_1");
+            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
+            testDriver.FindByIdClick("menuLink2_1");
 
-            var heading = firefoxWebDriver.FindByCssSelectorFromWebElement(firefoxWebDriver.FindByClassName("maintd", ExpectedCondition.ElementIsVisible, 5), "h1");
+            var heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
 
             Console.WriteLine(heading.Text);
            
 
-            firefoxWebDriver.Quit();
+            testDriver.Quit();
 
             Console.WriteLine("{0}Press any key to close ...", Environment.NewLine);
             Console.ReadKey();

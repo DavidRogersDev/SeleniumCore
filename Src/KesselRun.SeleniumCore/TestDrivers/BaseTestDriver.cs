@@ -1,11 +1,13 @@
-﻿using System;
+﻿using System.Linq;
+using System.Threading;
 using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Exceptions;
 using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.TestDrivers.Contracts;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Support.UI;
+using System;
 
 namespace KesselRun.SeleniumCore.TestDrivers
 {
@@ -16,6 +18,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
         public const string HttpSslPrefix = @"https://";
 
         public string DefaultUrl { get; set; }
+
         public IWebDriver WebDriver { get; protected set; }
 
         protected virtual IWebElement ClickWebElement(
@@ -42,25 +45,50 @@ namespace KesselRun.SeleniumCore.TestDrivers
         {
             INavigation navigation = WebDriver.Navigate();
 
-            if (string.IsNullOrEmpty(url))
+            if (string.IsNullOrWhiteSpace(url))
             {
                 url = DefaultUrl;
             }
 
             if (!url.StartsWith(HttpPrefix) && !url.StartsWith(HttpSslPrefix))
             {
-                //  Assume not SSL if dev to lazy to type in "https://"
+                //  Assume not SSL if dev is too lazy to type in "https://"
                 url = string.Concat(HttpPrefix, url);
             }
 
             navigation.GoToUrl(url);
         }
 
-        public virtual bool ElementContainsText(FinderStrategy findBy, string domElement, string text)
+        public virtual bool ElementContainsText(FinderStrategy findBy, string domElement, string text, int? seconds = null)
         {
-            var element = GetWebElementByFinderStrategy(findBy, domElement);
+            var element = GetWebElementByFinderStrategy(findBy, domElement, seconds: seconds);
 
             return !ReferenceEquals(null, element) && (element.Text.Contains(text));
+        }
+
+        public bool ElementIsNotInDom(FinderStrategy findBy, string domElement)
+        {
+            switch (findBy)
+            {
+                case FinderStrategy.Id:
+                    return !WebDriver.FindElements(By.Id(domElement)).Any();
+                case FinderStrategy.Name:
+                    return !WebDriver.FindElements(By.Name(domElement)).Any();
+                case FinderStrategy.Css:
+                    return !WebDriver.FindElements(By.CssSelector(domElement)).Any();
+                case FinderStrategy.ClassName:
+                    return !WebDriver.FindElements(By.ClassName(domElement)).Any();
+                case FinderStrategy.LinkText:
+                    return !WebDriver.FindElements(By.LinkText(domElement)).Any();
+                case FinderStrategy.PartialLinkText:
+                    return !WebDriver.FindElements(By.PartialLinkText(domElement)).Any();
+                case FinderStrategy.TagName:
+                    return !WebDriver.FindElements(By.TagName(domElement)).Any();
+                case FinderStrategy.XPath:
+                    return !WebDriver.FindElements(By.XPath(domElement)).Any();
+                default:
+                    throw new NotSupportedException(string.Format("{0} is not a supported finder strategy.", findBy));
+            }
         }
 
         public virtual IWebElement FindByClassName(
@@ -138,7 +166,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
             Func<IWebDriver, IWebElement> getWebelementFunc = GetWebelementFunc(By.Id(domElement), expectedCondition);
 
             return FindWebElement(By.Id(domElement), seconds, getWebelementFunc);
-        }
+        } 
 
         public virtual IWebElement FindByIdClick(
             string domElement, 
@@ -148,6 +176,21 @@ namespace KesselRun.SeleniumCore.TestDrivers
             IWebElement element = FindById(domElement, expectedCondition, seconds);
 
             return ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+        }
+
+        public bool FindByIdClickWithRetries(
+            string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null,
+            int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindById(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
         }
 
         public virtual IWebElement FindByIdFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
@@ -322,6 +365,17 @@ namespace KesselRun.SeleniumCore.TestDrivers
             return ClickWebElement(domElement, seconds, element, FinderStrategy.XPath);
         }
 
+        public bool FindByXPathClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByXPath(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.XPath);
+            };
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
         public virtual IWebElement FindByXPathFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
             Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.XPath(domElement), webElement);
@@ -347,15 +401,43 @@ namespace KesselRun.SeleniumCore.TestDrivers
         
         public abstract void Initialize(DriverOptions driverOptions);
 
-        public virtual void MouseOverElement(FinderStrategy findBy, string domElement, string script = null)
+        public virtual bool IsElementChecked(FinderStrategy findBy, string domElement, int? seconds = null)
         {
-            var element = GetWebElementByFinderStrategy(findBy, domElement);
-            HoverOverElement(element);
+            var element = GetWebElementByFinderStrategy(findBy, domElement, seconds: seconds);
+
+            if (ReferenceEquals(null, element))
+                return false;
+
+            return element.Selected;
         }
 
-        public void Quit()
+        public virtual Actions MouseOverElement(FinderStrategy findBy, string domElement, int? seconds = null)
+        {
+            var element = GetWebElementByFinderStrategy(findBy, domElement, seconds: seconds);
+            return HoverOverElement(element);
+        }
+        
+        public virtual void MouseOverElementUsingScript(string script)
+        {
+            if (script == null) throw new ArgumentNullException("script");
+            ((IJavaScriptExecutor)WebDriver).ExecuteScript(script);
+        }
+
+        public virtual void Quit()
         {
             WebDriver.Quit();
+        }
+
+        public virtual IWebDriver SwitchBackToDefault()
+        {
+            return WebDriver.SwitchTo().DefaultContent();
+        }
+
+        public virtual IWebDriver SwitchToIFrame(IWebElement frame)
+        {
+            if (frame == null) throw new ArgumentNullException("frame");
+
+            return WebDriver.SwitchTo().Frame(frame);
         }
 
         public virtual IWebElement TypeText(IWebElement webElement, string text)
@@ -369,20 +451,22 @@ namespace KesselRun.SeleniumCore.TestDrivers
             return webElement;
         }
 
-        public virtual IWebElement TypeText(FinderStrategy findBy, string domElement, string text)
+        public virtual IWebElement TypeText(FinderStrategy findBy, string domElement, string text, int? seconds = null)
         {
             if (string.IsNullOrWhiteSpace(domElement)) 
                 throw new ArgumentNullException("domElement");
 
+            IWebElement element = GetWebElementByFinderStrategy(findBy, domElement, seconds: seconds);
 
-            IWebElement element = GetWebElementByFinderStrategy(findBy, domElement);
+            if (ReferenceEquals(element, null))
+                throw new ElementWasNullException(findBy, domElement, seconds);
 
             return TypeText(element, text);
         }
 
-        public virtual IWebElement TypeText(FinderStrategy findBy, string domElement, string text, InputGesture inputGesture)
+        public virtual IWebElement TypeText(FinderStrategy findBy, string domElement, string text, InputGesture inputGesture, int? seconds = null)
         {
-            IWebElement element = TypeText(findBy, domElement, text);
+            IWebElement element = TypeText(findBy, domElement, text, seconds: seconds);
 
             if (ReferenceEquals(element, null))
                 return element;
@@ -406,7 +490,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
             WebDriver.Manage().Timeouts().SetScriptTimeout(TimeSpan.FromSeconds(wait ?? DefaultWebDriverWait));
         }
 
-        private IWebElement FindWithWait(int seconds, Func<IWebDriver, IWebElement> expectedFunc)
+        public virtual IWebElement FindWithWait(int seconds, Func<IWebDriver, IWebElement> expectedFunc)
         {
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(seconds));
             return wait.Until(expectedFunc);
@@ -443,35 +527,35 @@ namespace KesselRun.SeleniumCore.TestDrivers
             return webdriver => webElement.FindElement(locator);
         }
 
-        private IWebElement GetWebElementByFinderStrategy(FinderStrategy findBy, string domElement)
+        private IWebElement GetWebElementByFinderStrategy(FinderStrategy findBy, string domElement, int? seconds = null)
         {
             IWebElement element;
 
             switch (findBy)
             {
                 case FinderStrategy.Id:
-                    element = FindById(domElement);
+                    element = FindById(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.Name:
-                    element = FindByName(domElement);
+                    element = FindByName(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.Css:
-                    element = FindByCssSelector(domElement);
+                    element = FindByCssSelector(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.ClassName:
-                    element = FindByClassName(domElement);
+                    element = FindByClassName(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.LinkText:
-                    element = FindByLink(domElement);
+                    element = FindByLink(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.PartialLinkText:
-                    element = FindByPartialLinkText(domElement);
+                    element = FindByPartialLinkText(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.TagName:
-                    element = FindByTagName(domElement);
+                    element = FindByTagName(domElement, seconds: seconds);
                     break;
                 case FinderStrategy.XPath:
-                    element = FindByXPath(domElement);
+                    element = FindByXPath(domElement, seconds: seconds);
                     break;
                 default:
                     throw new NotSupportedException(string.Format("{0} is not a supported finder strategy.", findBy));
@@ -480,11 +564,42 @@ namespace KesselRun.SeleniumCore.TestDrivers
         }
 
 
-        private void HoverOverElement(IWebElement element)
+        private Actions HoverOverElement(IWebElement element)
         {
-            var action = new Actions(WebDriver);
+            var actions = new Actions(WebDriver);
             // Move to the Main Menu Element and hover  
-            action.MoveToElement(element).Perform();             
+            actions.MoveToElement(element).Perform();
+
+            return actions;
+        }
+
+        private bool ExecuteActionWithRetries(Action action, int? numberOfRetries = 20)
+        {
+            var result = false;
+            var attempts = 0;
+            
+            while (attempts < numberOfRetries)
+            {
+                try
+                {
+                    action();        
+                    result = true;
+                    break;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    //  log or trace here for future release perhaps
+                    Thread.Sleep(100);
+                }
+                catch (Exception)
+                {
+                    //  log or trace here for future release perhaps
+                    Thread.Sleep(100);
+                }
+
+                attempts++;
+            }
+            return result;
         }
     }
 }

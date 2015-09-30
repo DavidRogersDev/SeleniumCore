@@ -1,12 +1,15 @@
 ﻿using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Infrastructure;
 using OpenQA.Selenium;
+using System;
+using OpenQA.Selenium.Interactions;
 
 namespace KesselRun.SeleniumCore.TestDrivers.Contracts
 {
     public interface ITestDriver
     {
-        bool ElementContainsText(FinderStrategy findBy, string domElement, string text);
+        bool ElementContainsText(FinderStrategy findBy, string domElement, string text, int? seconds = null);
+        bool ElementIsNotInDom(FinderStrategy findBy, string domElement);
         IWebElement FindByClassName(string className, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
         IWebElement FindByClassNameClick(string className, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
         IWebElement FindByClassNameFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
@@ -16,7 +19,10 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         IWebElement FindByCssSelectorFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByCssSelectorFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindById(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
-        IWebElement FindByIdClick(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
+        IWebElement FindByIdClick(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? 
+            seconds = null);
+
+        bool FindByIdClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null, int? numberOfRetries = 20);
         IWebElement FindByIdFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByIdFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByLink(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
@@ -37,16 +43,23 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         IWebElement FindByTagNameFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByXPath(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
         IWebElement FindByXPathClick(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
+        bool FindByXPathClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null, int? numberOfRetries = 20);
+
         IWebElement FindByXPathFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByXPathFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
+        IWebElement FindWithWait(int seconds, Func<IWebDriver, IWebElement> expectedFunc);
         string GetDocumentTitle();
         void GoToUrl(string url);
         void Initialize(DriverOptions driverOptions);
-        void MouseOverElement(FinderStrategy findBy, string domElement, string script = null);
+        bool IsElementChecked(FinderStrategy findBy, string domElement, int? seconds = null);
+        Actions MouseOverElement(FinderStrategy findBy, string domElement, int? seconds = null);
+        void MouseOverElementUsingScript(string script);
         void Quit();
+        IWebDriver SwitchBackToDefault();
+        IWebDriver SwitchToIFrame(IWebElement frame);
         IWebElement TypeText(IWebElement webElement, string text);
-        IWebElement TypeText(FinderStrategy findBy, string domElement, string text);
-        IWebElement TypeText(FinderStrategy findBy, string domElement, string text, InputGesture inputGesture);
+        IWebElement TypeText(FinderStrategy findBy, string domElement, string text, int? seconds = null);
+        IWebElement TypeText(FinderStrategy findBy, string domElement, string text, InputGesture inputGesture, int? seconds = null);
         string DefaultUrl { get; set; }
         IWebDriver WebDriver { get; }
     }
