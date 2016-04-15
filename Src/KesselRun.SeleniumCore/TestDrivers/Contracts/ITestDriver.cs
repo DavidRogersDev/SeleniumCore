@@ -22,7 +22,6 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         IWebElement FindByIdClick(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? 
             seconds = null);
 
-        bool FindByIdClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null, int? numberOfRetries = 20);
         IWebElement FindByIdFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByIdFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByLink(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
@@ -43,13 +42,39 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         IWebElement FindByTagNameFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByXPath(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
         IWebElement FindByXPathClick(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null);
-        bool FindByXPathClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null, int? numberOfRetries = 20);
-
+        
         IWebElement FindByXPathFromWebElement(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindByXPathFromWebElementClick(IWebElement webElement, string domElement, int? seconds = null);
         IWebElement FindWithWait(int seconds, Func<IWebDriver, IWebElement> expectedFunc);
+
+        bool FindByIdClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByClassNameClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByCssSelectorClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByLinkClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByNameClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByPartialLinkTextClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByTagNameClickWithRetries(string domElement,
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null,
+            int? numberOfRetries = 20);
+        bool FindByXPathClickWithRetries(string domElement, 
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible, int? seconds = null, 
+            int? numberOfRetries = 20);
+        
         string GetDocumentTitle();
         void GoToUrl(string url);
+        void GoToDefaultUrl();
         void Initialize(DriverOptions driverOptions);
         bool IsElementChecked(FinderStrategy findBy, string domElement, int? seconds = null);
         Actions MouseOverElement(FinderStrategy findBy, string domElement, int? seconds = null);

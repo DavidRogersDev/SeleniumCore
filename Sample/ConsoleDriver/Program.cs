@@ -1,4 +1,5 @@
-﻿using KesselRun.SeleniumCore.Enums;
+﻿using KesselRun.SeleniumCore;
+using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
@@ -28,6 +29,49 @@ namespace ConsoleDriver
             testDriver.FindByIdClick("menuLink2_1");
 
             var heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
+
+            Console.WriteLine(heading.Text);
+
+            testDriver.Quit();
+            
+            testDriverFactory = new TestDriverFactory(
+                new DriverOptions
+                {
+                    DriverExePath = ConfigurationManager.AppSettings["FirefoxDriverPath"],
+                    Port = int.Parse(ConfigurationManager.AppSettings["FirefoxBrowserPort"]),
+                    Url = ConfigurationManager.AppSettings["StartUrl"]
+                });
+
+            testDriver = testDriverFactory.CreateTestDriver(DriverType.Firefox);
+
+            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
+
+            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
+            testDriver.FindByIdClick("menuLink2_1");
+
+            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
+
+            Console.WriteLine(heading.Text);
+           
+
+            testDriver.Quit();
+            
+            testDriverFactory = new TestDriverFactory(
+                new DriverOptions
+                {
+                    DriverExePath = ConfigurationManager.AppSettings["IeDriverPath"],
+                    Port = int.Parse(ConfigurationManager.AppSettings["IeBrowserPort"]),
+                    Url = ConfigurationManager.AppSettings["StartUrl"]
+                }, Constants.IeTestDriver);
+
+            testDriver = testDriverFactory.CreateTestDriver();
+
+            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
+
+            testDriver.MouseOverElementUsingScript(FinderStrategy.Id, "menuLink2", seconds: 10);
+            testDriver.FindByIdClick("menuLink2_1");
+
+            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
 
             Console.WriteLine(heading.Text);
            

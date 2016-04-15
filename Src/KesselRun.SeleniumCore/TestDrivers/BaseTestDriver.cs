@@ -193,6 +193,81 @@ namespace KesselRun.SeleniumCore.TestDrivers
             return ExecuteActionWithRetries(action, numberOfRetries);
         }
 
+        public bool FindByClassNameClickWithRetries(
+            string domElement, 
+            ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByClassName(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
+        public bool FindByCssSelectorClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByCssSelector(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
+        public bool FindByLinkClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByLink(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
+        public bool FindByNameClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByName(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
+        public bool FindByPartialLinkTextClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByPartialLinkText(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+
+        }
+
+        public bool FindByTagNameClickWithRetries(string domElement, ExpectedCondition expectedCondition = ExpectedCondition.ElementIsVisible,
+            int? seconds = null, int? numberOfRetries = 20)
+        {
+            Action action = () =>
+            {
+                IWebElement element = FindByTagName(domElement, expectedCondition, seconds);
+                ClickWebElement(domElement, seconds, element, FinderStrategy.Id);
+            };
+
+            return ExecuteActionWithRetries(action, numberOfRetries);
+        }
+
         public virtual IWebElement FindByIdFromWebElement(IWebElement webElement, string domElement, int? seconds = null)
         {
             Func<IWebDriver, IWebElement> webelementFromWebElementFunc = GetWebelementFromWebElementFunc(By.Id(domElement), webElement);
@@ -600,6 +675,11 @@ namespace KesselRun.SeleniumCore.TestDrivers
                 attempts++;
             }
             return result;
+        }
+
+        public void GoToDefaultUrl()
+        {
+            GoToUrl(DefaultUrl);
         }
     }
 }
