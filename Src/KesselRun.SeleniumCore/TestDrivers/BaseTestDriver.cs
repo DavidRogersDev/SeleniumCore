@@ -699,9 +699,7 @@ namespace KesselRun.SeleniumCore.TestDrivers
 
             var waitTime = seconds ?? DefaultWebDriverWait;
             var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(waitTime));
-
-            wait.Until(driver => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
-
+            
             wait.Until(driver =>
             {
                 bool isAjaxFinished = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0");
