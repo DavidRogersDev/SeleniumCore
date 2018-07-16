@@ -3,6 +3,7 @@ using KesselRun.SeleniumCore.Infrastructure;
 using OpenQA.Selenium;
 using System;
 using OpenQA.Selenium.Interactions;
+using DriverOptions = KesselRun.SeleniumCore.Infrastructure.DriverOptions;
 
 namespace KesselRun.SeleniumCore.TestDrivers.Contracts
 {
@@ -79,6 +80,9 @@ namespace KesselRun.SeleniumCore.TestDrivers.Contracts
         bool IsElementChecked(FinderStrategy findBy, string domElement, int? seconds = null);
         Actions MouseOverElement(FinderStrategy findBy, string domElement, int? seconds = null);
         void MouseOverElementUsingScript(string script);
+        void WaitForReady(int? seconds);
+        void WaitForReadyAndSpinnerDone(int? seconds);
+
         void Quit();
         IWebDriver SwitchBackToDefault();
         IWebDriver SwitchToIFrame(IWebElement frame);

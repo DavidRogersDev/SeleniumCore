@@ -4,6 +4,7 @@ using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using KesselRun.SeleniumCore.TestDrivers.Browsers.Chrome;
 using KesselRun.SeleniumCore.TestDrivers.Browsers.Firefox;
 using KesselRun.SeleniumCore.TestDrivers.Browsers.Ie;
+//using KesselRun.SeleniumCore.TestDrivers.Browsers.Ie;
 using KesselRun.SeleniumCore.TestDrivers.Contracts;
 
 namespace KesselRun.SeleniumCore.Infrastructure.Factories
@@ -54,10 +55,10 @@ namespace KesselRun.SeleniumCore.Infrastructure.Factories
                 return GetInitializedFireFoxTestDriver();
             }
             
-            if (typeof(T) == typeof(IeTestDriver))
-            {
-                return GetInitializedIeTestDriver();
-            }
+            //if (typeof(T) == typeof(IeTestDriver))
+            //{
+            //    return GetInitializedIeTestDriver();
+            //}
 
             throw new NotSupportedException(string.Format("{0} is not a supported driver", typeof(T)));
         }

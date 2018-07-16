@@ -8,6 +8,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using System;
+using DriverOptions = KesselRun.SeleniumCore.Infrastructure.DriverOptions;
 
 namespace KesselRun.SeleniumCore.TestDrivers
 {
@@ -680,6 +681,33 @@ namespace KesselRun.SeleniumCore.TestDrivers
         public void GoToDefaultUrl()
         {
             GoToUrl(DefaultUrl);
+        }
+
+        public void WaitForReady(int? seconds)
+        {
+            // Only works for jQuery.
+
+            var waitTime = seconds ?? DefaultWebDriverWait;
+            var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(waitTime));
+
+            wait.Until(driver => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
+        }
+
+        public void WaitForReadyAndSpinnerDone(int? seconds)
+        {
+            // Only works for jQuery.
+
+            var waitTime = seconds ?? DefaultWebDriverWait;
+            var wait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(waitTime));
+
+            wait.Until(driver => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
+
+            wait.Until(driver =>
+            {
+                bool isAjaxFinished = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0");
+                bool isLoaderHidden = (bool)((IJavaScriptExecutor)driver).ExecuteScript("return $('.spinner').is(':visible') == false");
+                return isAjaxFinished && isLoaderHidden;
+            });
         }
     }
 }

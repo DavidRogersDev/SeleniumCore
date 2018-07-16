@@ -11,7 +11,6 @@ using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using KesselRun.SeleniumCore.TestDrivers.Browsers.Firefox;
-using KesselRun.SeleniumCore.TestDrivers.Browsers.Ie;
 using OpenQA.Selenium;
 
 namespace ConsoleDriver2

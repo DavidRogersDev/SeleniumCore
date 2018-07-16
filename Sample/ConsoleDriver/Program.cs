@@ -5,6 +5,7 @@ using KesselRun.SeleniumCore.Infrastructure.Factories;
 using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using System;
 using System.Configuration;
+using System.Threading;
 using KesselRun.SeleniumCore.TestDrivers.Browsers.Chrome;
 
 namespace ConsoleDriver
@@ -13,50 +14,7 @@ namespace ConsoleDriver
     {
         private static void Main()
         {
-            ITestDriverFactory testDriverFactory = new TestDriverFactory(
-                new DriverOptions
-                {
-                    DriverExePath = ConfigurationManager.AppSettings["ChromeDriverPath"],
-                    Port = int.Parse(ConfigurationManager.AppSettings["ChromeBrowserPort"]),
-                    Url = ConfigurationManager.AppSettings["StartUrl"]
-                });
-
-            var testDriver = testDriverFactory.CreateTestDriver<ChromeTestDriver>();
-
-            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
-
-            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
-            testDriver.FindByIdClick("menuLink2_1");
-
-            var heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
-
-            Console.WriteLine(heading.Text);
-
-            testDriver.Quit();
-            
-            testDriverFactory = new TestDriverFactory(
-                new DriverOptions
-                {
-                    DriverExePath = ConfigurationManager.AppSettings["FirefoxDriverPath"],
-                    Port = int.Parse(ConfigurationManager.AppSettings["FirefoxBrowserPort"]),
-                    Url = ConfigurationManager.AppSettings["StartUrl"]
-                });
-
-            testDriver = testDriverFactory.CreateTestDriver(DriverType.Firefox);
-
-            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
-
-            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
-            testDriver.FindByIdClick("menuLink2_1");
-
-            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
-
-            Console.WriteLine(heading.Text);
-           
-
-            testDriver.Quit();
-            
-            testDriverFactory = new TestDriverFactory(
+            var testDriverFactory = new TestDriverFactory(
                 new DriverOptions
                 {
                     DriverExePath = ConfigurationManager.AppSettings["IeDriverPath"],
@@ -64,16 +22,19 @@ namespace ConsoleDriver
                     Url = ConfigurationManager.AppSettings["StartUrl"]
                 }, Constants.IeTestDriver);
 
-            testDriver = testDriverFactory.CreateTestDriver();
+            var testDriver = testDriverFactory.CreateTestDriver();
 
             testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
 
-            testDriver.MouseOverElementUsingScript(FinderStrategy.Id, "menuLink2", seconds: 10);
-            testDriver.FindByIdClick("menuLink2_1");
+            testDriver.MouseOverElement(FinderStrategy.PartialLinkText, "HACCP Certification");
 
-            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
+            Thread.Sleep(5000);
 
-            Console.WriteLine(heading.Text);
+            testDriver.FindByLinkClick("HACCP Principles");
+
+            //var heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
+
+            //Console.WriteLine(heading.Text);
            
 
             testDriver.Quit();
