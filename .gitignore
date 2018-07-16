@@ -35,3 +35,4 @@ Thumbs.db
 !Src/KesselRun.SeleniumCore/packages.config
 !NuGet.exe
 clean.bat
+.vs/
