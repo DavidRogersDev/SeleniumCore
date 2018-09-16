@@ -11,12 +11,10 @@ namespace KesselRun.SeleniumCore.TestDrivers.Browsers.Firefox
             //  Can always turn on implicit waits at a later time, but once set, they cannot be changed.
 
             DefaultUrl = driverOptions.Url;
+            
+            var firefoxDriverService = FirefoxDriverService.CreateDefaultService(driverOptions.DriverExePath, "geckodriver.exe");
 
-            var firefoxBinary = new FirefoxBinary(driverOptions.DriverExePath);
-            var firefoxProfile = new FirefoxProfile();
-
-            WebDriver = new FirefoxDriver(firefoxBinary, firefoxProfile);
+            WebDriver = new FirefoxDriver(firefoxDriverService);
         }
     }
 }
-

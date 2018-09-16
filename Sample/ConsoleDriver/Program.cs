@@ -1,11 +1,10 @@
-﻿using KesselRun.SeleniumCore;
-using KesselRun.SeleniumCore.Enums;
+﻿using KesselRun.SeleniumCore.Enums;
 using KesselRun.SeleniumCore.Infrastructure;
 using KesselRun.SeleniumCore.Infrastructure.Factories;
-using KesselRun.SeleniumCore.Infrastructure.Factories.Contracts;
 using System;
 using System.Configuration;
-using KesselRun.SeleniumCore.TestDrivers.Browsers.Chrome;
+using System.Threading;
+using KesselRun.SeleniumCore.TestDrivers.Browsers.Firefox;
 
 namespace ConsoleDriver
 {
@@ -13,28 +12,7 @@ namespace ConsoleDriver
     {
         private static void Main()
         {
-            ITestDriverFactory testDriverFactory = new TestDriverFactory(
-                new DriverOptions
-                {
-                    DriverExePath = ConfigurationManager.AppSettings["ChromeDriverPath"],
-                    Port = int.Parse(ConfigurationManager.AppSettings["ChromeBrowserPort"]),
-                    Url = ConfigurationManager.AppSettings["StartUrl"]
-                });
-
-            var testDriver = testDriverFactory.CreateTestDriver<ChromeTestDriver>();
-
-            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
-
-            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
-            testDriver.FindByIdClick("menuLink2_1");
-
-            var heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
-
-            Console.WriteLine(heading.Text);
-
-            testDriver.Quit();
-            
-            testDriverFactory = new TestDriverFactory(
+            var testDriverFactory = new TestDriverFactory(
                 new DriverOptions
                 {
                     DriverExePath = ConfigurationManager.AppSettings["FirefoxDriverPath"],
@@ -42,41 +20,22 @@ namespace ConsoleDriver
                     Url = ConfigurationManager.AppSettings["StartUrl"]
                 });
 
-            testDriver = testDriverFactory.CreateTestDriver(DriverType.Firefox);
+            var firfoxTestDriver = testDriverFactory.CreateTestDriver<FirefoxTestDriver>();
 
-            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
+            firfoxTestDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
 
-            testDriver.MouseOverElement(FinderStrategy.Id, "menuLink2");
-            testDriver.FindByIdClick("menuLink2_1");
+            firfoxTestDriver.MaximiseWindow();
 
-            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
-
-            Console.WriteLine(heading.Text);
-           
-
-            testDriver.Quit();
+            firfoxTestDriver.MouseOverElement(FinderStrategy.PartialLinkText, "HACCP Certification");
             
-            testDriverFactory = new TestDriverFactory(
-                new DriverOptions
-                {
-                    DriverExePath = ConfigurationManager.AppSettings["IeDriverPath"],
-                    Port = int.Parse(ConfigurationManager.AppSettings["IeBrowserPort"]),
-                    Url = ConfigurationManager.AppSettings["StartUrl"]
-                }, Constants.IeTestDriver);
+            firfoxTestDriver.FindByPartialLinkTextClick("HACCP Principles", ExpectedCondition.ElementIsVisible, 10);
 
-            testDriver = testDriverFactory.CreateTestDriver();
-
-            testDriver.GoToUrl(null); // will use default passed in to factory as part of DriverOptions struct
-
-            testDriver.MouseOverElementUsingScript(FinderStrategy.Id, "menuLink2", seconds: 10);
-            testDriver.FindByIdClick("menuLink2_1");
-
-            heading = testDriver.FindByCssSelectorFromWebElement(testDriver.FindByClassName("maintd", seconds:5), "h1");
+            var heading = firfoxTestDriver.FindByTagName("h1", seconds: 5);
 
             Console.WriteLine(heading.Text);
            
 
-            testDriver.Quit();
+            firfoxTestDriver.Quit();
 
             Console.WriteLine("{0}Press any key to close ...", Environment.NewLine);
             Console.ReadKey();

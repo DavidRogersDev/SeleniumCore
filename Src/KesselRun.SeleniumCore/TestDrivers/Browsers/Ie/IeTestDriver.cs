@@ -4,27 +4,13 @@ using KesselRun.SeleniumCore.Exceptions;
 using KesselRun.SeleniumCore.Infrastructure;
 using OpenQA.Selenium;
 using OpenQA.Selenium.IE;
+using DriverOptions = KesselRun.SeleniumCore.Infrastructure.DriverOptions;
 
 namespace KesselRun.SeleniumCore.TestDrivers.Browsers.Ie
 {
     public class IeTestDriver : BaseTestDriver
     {
-        private Converter<DriverEngine, InternetExplorerDriverEngine> _engineConverter;
-
-        private InternetExplorerDriverEngine ConvertToBrowserEngine(DriverEngine driverEngine)
-        {
-            switch (driverEngine)
-            {
-                case DriverEngine.AutoDetect:
-                    return InternetExplorerDriverEngine.AutoDetect;
-                case DriverEngine.Legacy:
-                    return InternetExplorerDriverEngine.Legacy;
-                case DriverEngine.Vendor:
-                    return InternetExplorerDriverEngine.Vendor;
-
-            }
-            return InternetExplorerDriverEngine.Legacy;
-        }
+        private Converter<DriverEngine, OpenQA.Selenium.IE. InternetExplorerDriver> _engineConverter;
 
         public override void Initialize(DriverOptions driverOptions)
         {
@@ -37,9 +23,9 @@ namespace KesselRun.SeleniumCore.TestDrivers.Browsers.Ie
                 InternetExplorerDriverService.CreateDefaultService(driverOptions.DriverExePath);
             var internetExplorerOptions = new InternetExplorerOptions();
 
-            _engineConverter = ConvertToBrowserEngine;
-            internetExplorerDriverService.Implementation = _engineConverter(driverOptions.DriverEngine); 
-
+            internetExplorerOptions.IntroduceInstabilityByIgnoringProtectedModeSettings = true;
+            internetExplorerOptions.AddAdditionalCapability("EnsureCleanSession", true);
+            
             internetExplorerDriverService.Port = driverOptions.Port; // this is the port for the driver, not the webpage
 
             WebDriver = new InternetExplorerDriver(internetExplorerDriverService, internetExplorerOptions);
